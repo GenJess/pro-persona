@@ -1,18 +1,19 @@
-
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
   user: null,
   loading: true,
+  signOut: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -21,13 +22,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session)
-        setUser(session?.user ?? null)
-        setLoading(false)
-    })
+    // Set up auth state listener FIRST (correct order)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
+    );
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -38,13 +43,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+    setUser(null);
+  };
+
   const value = {
     session,
     user,
     loading,
+    signOut,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
