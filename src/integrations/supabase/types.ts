@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      personas: {
+        Row: {
+          agent_id: string | null
+          avatar_url: string | null
+          conversation_link: string | null
+          created_at: string
+          elevenlabs_api_key: string | null
+          id: string
+          is_public: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          avatar_url?: string | null
+          conversation_link?: string | null
+          created_at?: string
+          elevenlabs_api_key?: string | null
+          id?: string
+          is_public?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          avatar_url?: string | null
+          conversation_link?: string | null
+          created_at?: string
+          elevenlabs_api_key?: string | null
+          id?: string
+          is_public?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          elevenlabs_agent_id: string | null
+          elevenlabs_agent_link: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          elevenlabs_agent_id?: string | null
+          elevenlabs_agent_link?: string | null
+          first_name?: string | null
+          id: string
+          last_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          elevenlabs_agent_id?: string | null
+          elevenlabs_agent_link?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
