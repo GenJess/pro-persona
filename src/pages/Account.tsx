@@ -119,7 +119,7 @@ const Account = () => {
   return (
     <div className="max-w-4xl mx-auto px-4">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/10 p-8 md:p-10 mb-8 opacity-0 animate-fade-in">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/10 p-8 md:p-12 mb-10 opacity-0 animate-fade-in">
         <div className="hero-orb-2 -top-20 -right-20 opacity-20" />
         <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6">
           <Avatar className="h-20 w-20 ring-4 ring-background shadow-xl">
@@ -134,15 +134,15 @@ const Account = () => {
             </h1>
             <p className="text-muted-foreground mt-1">{user?.email}</p>
             {conversationLink && (
-              <div className="flex items-center gap-2 mt-4 flex-wrap justify-center sm:justify-start">
-                <Button asChild size="sm" className="shadow-md shadow-primary/20">
+              <div className="flex items-center gap-3 mt-5 flex-wrap justify-center sm:justify-start">
+                <Button asChild className="shadow-md shadow-primary/20">
                   <a href={conversationLink} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Chat with Persona
-                    <ExternalLink className="h-3 w-3 ml-1" />
+                    <ExternalLink className="h-3 w-3 ml-1.5" />
                   </a>
                 </Button>
-                <Button variant="outline" size="sm" onClick={copyLink}>
+                <Button variant="outline" onClick={copyLink}>
                   {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
                   {copied ? 'Copied' : 'Copy Link'}
                 </Button>
@@ -152,37 +152,37 @@ const Account = () => {
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Persona Card */}
         <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-1">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+          <CardHeader className="p-6 md:p-8">
+            <CardTitle className="flex items-center gap-3 text-lg">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
                 <Settings className="h-4 w-4 text-primary" />
               </div>
               Your Persona
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="mt-1">
               {persona ? "Manage your professional persona settings" : "You haven't created a persona yet"}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="px-6 md:px-8 pb-8 space-y-6">
             {!persona ? (
-              <div className="text-center py-12 border-2 border-dashed border-border rounded-xl bg-muted/20">
+              <div className="text-center py-14 border-2 border-dashed border-border rounded-xl bg-muted/20">
                 <Upload className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">
+                <p className="text-muted-foreground mb-5">
                   Create your first persona to get started
                 </p>
-                <Button asChild>
+                <Button asChild size="lg">
                   <Link to="/create-persona">Create Persona</Link>
                 </Button>
               </div>
             ) : (
               <>
-                <div className="p-4 rounded-xl bg-muted/30 border border-border/50">
+                <div className="p-5 rounded-xl bg-muted/30 border border-border/50">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold">Professional Persona</h3>
-                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${
+                    <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${
                       persona.is_public 
                         ? 'bg-success/10 text-success' 
                         : 'bg-muted text-muted-foreground'
@@ -195,12 +195,12 @@ const Account = () => {
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <Label className="text-base font-semibold">Persona Visibility</Label>
                   <RadioGroup value={visibility} onValueChange={setVisibility} className="space-y-3">
                     <Label 
                       htmlFor="private" 
-                      className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                      className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
                         visibility === 'private' 
                           ? 'border-primary bg-primary/5 shadow-sm shadow-primary/10' 
                           : 'border-border hover:border-primary/30'
@@ -210,12 +210,12 @@ const Account = () => {
                       <EyeOff className="h-5 w-5 text-muted-foreground" />
                       <div className="flex-1">
                         <span className="font-medium">Private</span>
-                        <p className="text-sm text-muted-foreground">Only you can see and share your persona</p>
+                        <p className="text-sm text-muted-foreground mt-0.5">Only you can see and share your persona</p>
                       </div>
                     </Label>
                     <Label 
                       htmlFor="public" 
-                      className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                      className={`flex items-center gap-4 p-5 rounded-xl border cursor-pointer transition-all duration-200 ${
                         visibility === 'public' 
                           ? 'border-primary bg-primary/5 shadow-sm shadow-primary/10' 
                           : 'border-border hover:border-primary/30'
@@ -225,7 +225,7 @@ const Account = () => {
                       <Eye className="h-5 w-5 text-muted-foreground" />
                       <div className="flex-1">
                         <span className="font-medium">Public</span>
-                        <p className="text-sm text-muted-foreground">Anyone can discover your persona</p>
+                        <p className="text-sm text-muted-foreground mt-0.5">Anyone can discover your persona</p>
                       </div>
                     </Label>
                   </RadioGroup>
@@ -247,29 +247,29 @@ const Account = () => {
 
         {/* Security Card */}
         <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+          <CardHeader className="p-6 md:p-8">
+            <CardTitle className="flex items-center gap-3 text-lg">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
                 <Shield className="h-4 w-4 text-primary" />
               </div>
               Security
             </CardTitle>
-            <CardDescription>Manage your account security</CardDescription>
+            <CardDescription className="mt-1">Manage your account security</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border border-border/50 rounded-xl">
+          <CardContent className="px-6 md:px-8 pb-8 space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-5 border border-border/50 rounded-xl">
               <div>
                 <h3 className="font-medium">Change Password</h3>
-                <p className="text-sm text-muted-foreground">Update your account password</p>
+                <p className="text-sm text-muted-foreground mt-0.5">Update your account password</p>
               </div>
-              <Button variant="outline" size="sm" disabled>Coming Soon</Button>
+              <Button variant="outline" disabled>Coming Soon</Button>
             </div>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 border border-destructive/20 rounded-xl">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-5 border border-destructive/20 rounded-xl">
               <div>
                 <h3 className="font-medium text-destructive">Delete Account</h3>
-                <p className="text-sm text-muted-foreground">Permanently delete your account</p>
+                <p className="text-sm text-muted-foreground mt-0.5">Permanently delete your account</p>
               </div>
-              <Button variant="destructive" size="sm" disabled>Coming Soon</Button>
+              <Button variant="destructive" disabled>Coming Soon</Button>
             </div>
           </CardContent>
         </Card>

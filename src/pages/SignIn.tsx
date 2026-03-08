@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,9 +66,9 @@ const SignIn = () => {
 
   return (
     <div className="flex min-h-[75vh] items-center justify-center px-4">
-      <div className="grid w-full max-w-4xl grid-cols-1 md:grid-cols-2 gap-0 md:gap-0 overflow-hidden rounded-2xl border border-border/50 shadow-xl bg-card">
+      <div className="grid w-full max-w-4xl grid-cols-1 md:grid-cols-2 gap-0 overflow-hidden rounded-2xl border border-border/50 shadow-xl bg-card">
         {/* Left branding panel */}
-        <div className="hidden md:flex flex-col justify-center p-10 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
+        <div className="hidden md:flex flex-col justify-center p-12 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
           <div className="hero-orb-2 -bottom-20 -left-20 opacity-30" />
           <div className="relative z-10">
             <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 mb-8">
@@ -83,14 +82,14 @@ const SignIn = () => {
         </div>
 
         {/* Right form panel */}
-        <div className="p-8 md:p-10">
+        <div className="p-8 md:p-12">
           <div className="space-y-2 mb-8">
             <h1 className="font-display text-2xl font-bold">Sign In</h1>
             <p className="text-muted-foreground">
               Enter your credentials to continue
             </p>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <div className="relative">
@@ -115,7 +114,7 @@ const SignIn = () => {
               </div>
               {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
             </div>
-            <Button type="submit" disabled={isLoading} className="w-full h-11 font-semibold shadow-md shadow-primary/20">
+            <Button type="submit" disabled={isLoading} className="w-full h-12 text-base font-semibold shadow-md shadow-primary/20">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

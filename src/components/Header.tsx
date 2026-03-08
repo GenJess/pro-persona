@@ -66,23 +66,23 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-3">
           {session ? (
             <>
-              <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
                 <Link to="/account" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Account
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" onClick={handleSignOut} className="text-muted-foreground">
+              <Button variant="outline" onClick={handleSignOut} className="text-muted-foreground">
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
                 <Link to="/signin">Sign In</Link>
               </Button>
-              <Button size="sm" asChild className="shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-shadow">
+              <Button asChild className="shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-shadow">
                 <Link to="/signup">Get Started</Link>
               </Button>
             </>
@@ -100,7 +100,7 @@ const Header = () => {
         </Button>
       </div>
 
-      {/* Mobile Menu with animation */}
+      {/* Mobile Menu */}
       <div className={cn(
         "md:hidden overflow-hidden transition-all duration-300 ease-out",
         mobileMenuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
