@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { User, Eye, EyeOff, Upload, Loader2, MessageCircle, Settings, Shield, Copy, Check, ExternalLink } from 'lucide-react';
+import { User, Eye, EyeOff, Upload, Loader2, MessageSquare, Shield, Copy, Check, ExternalLink, Brain, FileText, Mic, Link2, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
@@ -101,7 +101,7 @@ const Account = () => {
     if (link) {
       navigator.clipboard.writeText(link);
       setCopied(true);
-      toast({ title: 'Copied!', description: 'Conversation link copied to clipboard.' });
+      toast({ title: 'Copied!', description: 'Agent link copied to clipboard.' });
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -115,6 +115,14 @@ const Account = () => {
   }
 
   const conversationLink = profile?.elevenlabs_agent_link || persona?.conversation_link;
+  const hasAgent = !!persona?.conversation_link || !!profile?.elevenlabs_agent_id;
+
+  // Training status items
+  const trainingItems = [
+    { label: 'Resume', done: hasAgent, icon: <FileText className="h-4 w-4" /> },
+    { label: 'Voice Clone', done: false, icon: <Mic className="h-4 w-4" /> },
+    { label: 'Projects', done: false, icon: <Link2 className="h-4 w-4" /> },
+  ];
   
   return (
     <div className="max-w-4xl mx-auto px-4">
@@ -129,20 +137,21 @@ const Account = () => {
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 text-center sm:text-left">
+            <p className="text-sm text-primary font-medium mb-1">Your Professional Agent</p>
             <h1 className="text-2xl md:text-3xl font-bold font-display">
               {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : 'Your Account'}
             </h1>
-            <p className="text-muted-foreground mt-1">{user?.email}</p>
+            <p className="text-muted-foreground mt-1">Always available. Always informed. Always you.</p>
             {conversationLink && (
               <div className="flex items-center gap-3 mt-5 flex-wrap justify-center sm:justify-start">
-                <Button asChild className="shadow-md shadow-primary/20">
+                <Button asChild className="h-11 shadow-md shadow-primary/20">
                   <a href={conversationLink} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Chat with Persona
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Chat with My Agent
                     <ExternalLink className="h-3 w-3 ml-1.5" />
                   </a>
                 </Button>
-                <Button variant="outline" onClick={copyLink}>
+                <Button variant="outline" className="h-11" onClick={copyLink}>
                   {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
                   {copied ? 'Copied' : 'Copy Link'}
                 </Button>
@@ -153,35 +162,82 @@ const Account = () => {
       </div>
 
       <div className="space-y-8">
-        {/* Persona Card */}
-        <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-1">
+        {/* Agent Training Status */}
+        {hasAgent && (
+          <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-1">
+            <CardHeader className="p-6 md:p-8">
+              <CardTitle className="flex items-center gap-3 text-lg">
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
+                  <Brain className="h-4 w-4 text-primary" />
+                </div>
+                Agent Training
+              </CardTitle>
+              <CardDescription className="mt-1">
+                What your agent has been trained on. Add more to make it smarter.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-6 md:px-8 pb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {trainingItems.map((item) => (
+                  <div 
+                    key={item.label}
+                    className={`flex items-center gap-3 p-4 rounded-xl border ${
+                      item.done 
+                        ? 'border-success/30 bg-success/5' 
+                        : 'border-border/50 bg-muted/20'
+                    }`}
+                  >
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-lg ${
+                      item.done ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
+                    }`}>
+                      {item.done ? <Check className="h-4 w-4" /> : item.icon}
+                    </div>
+                    <div>
+                      <span className="font-medium text-sm">{item.label}</span>
+                      <p className="text-xs text-muted-foreground">
+                        {item.done ? 'Added' : 'Coming soon'}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Agent Settings */}
+        <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-2">
           <CardHeader className="p-6 md:p-8">
             <CardTitle className="flex items-center gap-3 text-lg">
               <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
-                <Settings className="h-4 w-4 text-primary" />
+                <User className="h-4 w-4 text-primary" />
               </div>
-              Your Persona
+              Agent Settings
             </CardTitle>
             <CardDescription className="mt-1">
-              {persona ? "Manage your professional persona settings" : "You haven't created a persona yet"}
+              {persona ? "Control who can discover and talk to your agent" : "You haven't built an agent yet"}
             </CardDescription>
           </CardHeader>
           <CardContent className="px-6 md:px-8 pb-8 space-y-6">
             {!persona ? (
               <div className="text-center py-14 border-2 border-dashed border-border rounded-xl bg-muted/20">
-                <Upload className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-5">
-                  Create your first persona to get started
+                <Brain className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                <h3 className="font-semibold text-lg mb-2">Build Your Professional Agent</h3>
+                <p className="text-muted-foreground mb-5 max-w-sm mx-auto">
+                  Upload your resume, prime your agent with your work, and let people learn from you 24/7.
                 </p>
-                <Button asChild size="lg">
-                  <Link to="/create-persona">Create Persona</Link>
+                <Button asChild size="lg" className="h-12 px-8">
+                  <Link to="/create-persona">
+                    Build Your Agent
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </div>
             ) : (
               <>
                 <div className="p-5 rounded-xl bg-muted/30 border border-border/50">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">Professional Persona</h3>
+                    <h3 className="font-semibold">Professional Agent</h3>
                     <span className={`text-xs px-3 py-1.5 rounded-full font-medium ${
                       persona.is_public 
                         ? 'bg-success/10 text-success' 
@@ -196,7 +252,7 @@ const Account = () => {
                 </div>
 
                 <div className="space-y-5">
-                  <Label className="text-base font-semibold">Persona Visibility</Label>
+                  <Label className="text-base font-semibold">Discoverability</Label>
                   <RadioGroup value={visibility} onValueChange={setVisibility} className="space-y-3">
                     <Label 
                       htmlFor="private" 
@@ -210,7 +266,7 @@ const Account = () => {
                       <EyeOff className="h-5 w-5 text-muted-foreground" />
                       <div className="flex-1">
                         <span className="font-medium">Private</span>
-                        <p className="text-sm text-muted-foreground mt-0.5">Only you can see and share your persona</p>
+                        <p className="text-sm text-muted-foreground mt-0.5">Only people with your link can talk to your agent</p>
                       </div>
                     </Label>
                     <Label 
@@ -225,11 +281,11 @@ const Account = () => {
                       <Eye className="h-5 w-5 text-muted-foreground" />
                       <div className="flex-1">
                         <span className="font-medium">Public</span>
-                        <p className="text-sm text-muted-foreground mt-0.5">Anyone can discover your persona</p>
+                        <p className="text-sm text-muted-foreground mt-0.5">Anyone can discover your agent on the Explore page</p>
                       </div>
                     </Label>
                   </RadioGroup>
-                  <Button onClick={handleVisibilitySave} disabled={saving} className="w-full sm:w-auto">
+                  <Button onClick={handleVisibilitySave} disabled={saving} className="w-full sm:w-auto h-11">
                     {saving ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -245,8 +301,39 @@ const Account = () => {
           </CardContent>
         </Card>
 
+        {/* Test Your Agent */}
+        {conversationLink && (
+          <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-3">
+            <CardHeader className="p-6 md:p-8">
+              <CardTitle className="flex items-center gap-3 text-lg">
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                </div>
+                Test Your Agent
+              </CardTitle>
+              <CardDescription className="mt-1">
+                Talk to your own agent to see how it performs and what it knows
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-6 md:px-8 pb-8">
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Try asking your agent questions like "What are you working on?" or "Tell me about your experience" to test how well it represents you.
+                </p>
+                <Button asChild className="h-11">
+                  <a href={conversationLink} target="_blank" rel="noopener noreferrer">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Talk to My Agent
+                    <ExternalLink className="h-3 w-3 ml-1.5" />
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Security Card */}
-        <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-2">
+        <Card className="border-border/50 shadow-sm opacity-0 animate-fade-in stagger-4">
           <CardHeader className="p-6 md:p-8">
             <CardTitle className="flex items-center gap-3 text-lg">
               <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
@@ -267,7 +354,7 @@ const Account = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-5 border border-destructive/20 rounded-xl">
               <div>
                 <h3 className="font-medium text-destructive">Delete Account</h3>
-                <p className="text-sm text-muted-foreground mt-0.5">Permanently delete your account</p>
+                <p className="text-sm text-muted-foreground mt-0.5">Permanently delete your account and agent</p>
               </div>
               <Button variant="destructive" disabled>Coming Soon</Button>
             </div>

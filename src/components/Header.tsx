@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { BotMessageSquare, User, LogOut, Menu, X } from 'lucide-react';
+import { Brain, User, LogOut, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -15,7 +15,7 @@ const Header = () => {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/personas', label: 'Personas' },
+    { href: '/personas', label: 'Explore' },
   ];
 
   const handleSignOut = async () => {
@@ -37,7 +37,7 @@ const Header = () => {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2.5 group">
           <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
-            <BotMessageSquare className="h-5 w-5" />
+            <Brain className="h-5 w-5" />
           </div>
           <span className="text-xl font-bold font-display">
             ProPersona
@@ -69,7 +69,7 @@ const Header = () => {
               <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
                 <Link to="/account" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  Account
+                  My Agent
                 </Link>
               </Button>
               <Button variant="outline" onClick={handleSignOut} className="text-muted-foreground">
@@ -83,7 +83,7 @@ const Header = () => {
                 <Link to="/signin">Sign In</Link>
               </Button>
               <Button asChild className="shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-shadow">
-                <Link to="/signup">Get Started</Link>
+                <Link to="/signup">Build Your Agent</Link>
               </Button>
             </>
           )}
@@ -129,7 +129,7 @@ const Header = () => {
                 <Button variant="ghost" asChild className="justify-start">
                   <Link to="/account" onClick={() => setMobileMenuOpen(false)}>
                     <User className="h-4 w-4 mr-2" />
-                    Account
+                    My Agent
                   </Link>
                 </Button>
                 <Button variant="outline" onClick={() => { handleSignOut(); setMobileMenuOpen(false); }}>
@@ -143,7 +143,7 @@ const Header = () => {
                   <Link to="/signin" onClick={() => setMobileMenuOpen(false)}>Sign In</Link>
                 </Button>
                 <Button asChild>
-                  <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Get Started</Link>
+                  <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>Build Your Agent</Link>
                 </Button>
               </>
             )}

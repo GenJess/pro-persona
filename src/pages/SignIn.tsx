@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link, useNavigate } from 'react-router-dom';
-import { Loader2, Mail, Lock, BotMessageSquare, ArrowRight } from 'lucide-react';
+import { Loader2, Mail, Lock, Brain, ArrowRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -72,11 +72,11 @@ const SignIn = () => {
           <div className="hero-orb-2 -bottom-20 -left-20 opacity-30" />
           <div className="relative z-10">
             <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 mb-8">
-              <BotMessageSquare className="h-7 w-7" />
+              <Brain className="h-7 w-7" />
             </div>
-            <h2 className="text-3xl font-bold font-display mb-4">Welcome back to ProPersona</h2>
+            <h2 className="text-3xl font-bold font-display mb-4">Welcome back</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Sign in to manage your professional AI persona, update your settings, and track conversations.
+              Sign in to manage your professional agent, update your training data, and see who's been talking to you.
             </p>
           </div>
         </div>
@@ -130,7 +130,7 @@ const SignIn = () => {
             <p className="text-sm text-muted-foreground text-center pt-2">
               Don't have an account?{' '}
               <Link to="/signup" className="text-primary font-medium hover:underline">
-                Create one
+                Build your agent
               </Link>
             </p>
           </form>
