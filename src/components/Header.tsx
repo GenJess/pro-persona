@@ -33,26 +33,28 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full glass border-b">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
-          <BotMessageSquare className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold font-display bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+        <Link to="/" className="flex items-center space-x-2.5 group">
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
+            <BotMessageSquare className="h-5 w-5" />
+          </div>
+          <span className="text-xl font-bold font-display">
             ProPersona
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium">
+        <nav className="hidden md:flex items-center space-x-1 text-sm font-medium">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
               className={cn(
-                'transition-colors hover:text-primary relative py-2',
+                'px-4 py-2 rounded-lg transition-colors',
                 location.pathname === link.href 
-                  ? 'text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full' 
-                  : 'text-muted-foreground'
+                  ? 'text-primary bg-primary/5 font-semibold' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
               )}
             >
               {link.label}
@@ -64,23 +66,23 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-3">
           {session ? (
             <>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
                 <Link to="/account" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Account
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <Button variant="outline" size="sm" onClick={handleSignOut} className="text-muted-foreground">
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
                 <Link to="/signin">Sign In</Link>
               </Button>
-              <Button size="sm" asChild>
+              <Button size="sm" asChild className="shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-shadow">
                 <Link to="/signup">Get Started</Link>
               </Button>
             </>
@@ -98,27 +100,30 @@ const Header = () => {
         </Button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background p-4 space-y-4">
-          <nav className="flex flex-col space-y-2">
+      {/* Mobile Menu with animation */}
+      <div className={cn(
+        "md:hidden overflow-hidden transition-all duration-300 ease-out",
+        mobileMenuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+      )}>
+        <div className="border-t border-border bg-background p-4 space-y-4">
+          <nav className="flex flex-col space-y-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
-                  'px-4 py-2 rounded-lg transition-colors',
+                  'px-4 py-2.5 rounded-lg transition-colors text-sm font-medium',
                   location.pathname === link.href
                     ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted'
+                    : 'text-muted-foreground hover:bg-accent/50'
                 )}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+          <div className="flex flex-col space-y-2 pt-3 border-t border-border">
             {session ? (
               <>
                 <Button variant="ghost" asChild className="justify-start">
@@ -144,7 +149,7 @@ const Header = () => {
             )}
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
