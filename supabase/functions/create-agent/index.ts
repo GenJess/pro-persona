@@ -4,72 +4,85 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { resume_text, first_name, last_name, elevenlabs_api_key } = await req.json();
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    const authHeader = req.headers.get("Authorization")!;
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       { global: { headers: { Authorization: authHeader } } }
     );
-    
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { resume_text, first_name, last_name, elevenlabs_api_key } = await req.json();
+
     if (!resume_text || !resume_text.trim()) {
       throw new Error("Resume text is empty. Please paste your resume.");
     }
 
-    const resumeText = resume_text;
-
-    // Create ElevenLabs agent
     const agentName = `${first_name} ${last_name}'s Persona`;
-    const agentPrompt = `You are a professional AI persona for ${first_name} ${last_name}. Your background, skills, and experience are based on the following resume:\n\n${resumeText}\n\nYou must answer questions as if you are ${first_name}, drawing upon the information provided in the resume. Be professional, engaging, and embody the persona of the individual from the resume.`;
-    
+    const agentPrompt = `You are a professional AI persona for ${first_name} ${last_name}. Your background, skills, and experience are based on the following resume:\n\n${resume_text}\n\nYou must answer questions as if you are ${first_name}, drawing upon the information provided in the resume. Be professional, engaging, and embody the persona of the individual from the resume.`;
+
     const createAgentResponse = await fetch("https://api.elevenlabs.io/v1/convai/agents/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "xi-api-key": elevenlabs_api_key },
-        body: JSON.stringify({
-            agent_name: agentName,
-            agent_description: `An AI-powered professional persona for ${first_name} ${last_name}.`,
-            prompt: agentPrompt,
-            initial_message: `Hello, this is the AI persona for ${first_name} ${last_name}. How can I assist you today?`,
-            voice_id: "pFZP5JQG7iQjIQuC4Bku", // Using "Lily" as a default voice
-            conversation_config: {
-                turn_detection: {
-                    type: "server_vad",
-                    threshold: 0.5,
-                    prefix_padding_ms: 300,
-                    silence_duration_ms: 200
-                }
-            }
-        }),
+      method: "POST",
+      headers: { "Content-Type": "application/json", "xi-api-key": elevenlabs_api_key },
+      body: JSON.stringify({
+        agent_name: agentName,
+        agent_description: `An AI-powered professional persona for ${first_name} ${last_name}.`,
+        prompt: agentPrompt,
+        initial_message: `Hello, this is the AI persona for ${first_name} ${last_name}. How can I assist you today?`,
+        voice_id: "pFZP5JQG7iQjIQuC4Bku",
+        conversation_config: {
+          turn_detection: {
+            type: "server_vad",
+            threshold: 0.5,
+            prefix_padding_ms: 300,
+            silence_duration_ms: 200,
+          },
+        },
+      }),
     });
 
     if (!createAgentResponse.ok) {
-        const errorBody = await createAgentResponse.text();
-        console.error("ElevenLabs Agent Creation Error:", errorBody);
-        throw new Error(`Failed to create ElevenLabs agent. Status: ${createAgentResponse.status}`);
+      const errorBody = await createAgentResponse.text();
+      console.error("ElevenLabs Agent Creation Error:", errorBody);
+      throw new Error(`Failed to create ElevenLabs agent. Status: ${createAgentResponse.status}`);
     }
-    
+
     const agentData = await createAgentResponse.json();
     const agent_id = agentData.agent_id;
 
-    // Get the conversation signed URL
-    const getSignedUrlResponse = await fetch(`https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${agent_id}`, {
-        headers: { "xi-api-key": elevenlabs_api_key },
-    });
+    const getSignedUrlResponse = await fetch(
+      `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${agent_id}`,
+      { headers: { "xi-api-key": elevenlabs_api_key } }
+    );
 
     if (!getSignedUrlResponse.ok) {
-        const errorBody = await getSignedUrlResponse.text();
-        console.error("ElevenLabs Signed URL Error:", errorBody);
-        throw new Error(`Failed to get agent conversation link. Status: ${getSignedUrlResponse.status}`);
+      const errorBody = await getSignedUrlResponse.text();
+      console.error("ElevenLabs Signed URL Error:", errorBody);
+      throw new Error(`Failed to get agent conversation link. Status: ${getSignedUrlResponse.status}`);
     }
 
     const signedUrlData = await getSignedUrlResponse.json();
