@@ -159,7 +159,7 @@ const SignUp = () => {
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-8">
       <div className="grid w-full max-w-5xl grid-cols-1 md:grid-cols-5 gap-0 overflow-hidden rounded-2xl border border-border/50 shadow-xl bg-card">
         {/* Left branding panel */}
-        <div className="hidden md:flex md:col-span-2 flex-col justify-center p-10 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
+        <div className="hidden md:flex md:col-span-2 flex-col justify-center p-12 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
           <div className="hero-orb-2 -bottom-20 -left-20 opacity-30" />
           <div className="relative z-10">
             <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 mb-8">
@@ -169,7 +169,7 @@ const SignUp = () => {
             <p className="text-muted-foreground leading-relaxed mb-8">
               Upload your resume and let AI create a voice-interactive professional persona for you.
             </p>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {['AI voice agent', 'Share publicly or privately', 'Always available 24/7'].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
@@ -183,15 +183,15 @@ const SignUp = () => {
         </div>
 
         {/* Right form panel */}
-        <div className="md:col-span-3 p-8 md:p-10 overflow-y-auto max-h-[85vh]">
-          <div className="space-y-1 mb-6">
+        <div className="md:col-span-3 p-8 md:p-12 overflow-y-auto max-h-[85vh]">
+          <div className="space-y-1.5 mb-8">
             <h1 className="font-display text-2xl font-bold">Create Account</h1>
-            <p className="text-muted-foreground text-sm">Set up your professional AI persona</p>
+            <p className="text-muted-foreground">Set up your professional AI persona</p>
           </div>
 
           {/* Progress indicator during creation */}
           {isLoading && creationStep > 0 && (
-            <div className="mb-6 p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
+            <div className="mb-8 p-5 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-primary">{steps[creationStep - 1]}</span>
                 <span className="text-muted-foreground">{creationStep}/4</span>
@@ -200,44 +200,44 @@ const SignUp = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label htmlFor="first-name" className="text-sm">First Name</Label>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="first-name" className="text-sm font-medium">First Name</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input id="first-name" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)}
-                    className={`pl-10 h-10 ${errors.firstName ? 'border-destructive' : ''}`} />
+                    className={`pl-10 h-11 ${errors.firstName ? 'border-destructive' : ''}`} />
                 </div>
                 {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="last-name" className="text-sm">Last Name</Label>
+              <div className="space-y-2">
+                <Label htmlFor="last-name" className="text-sm font-medium">Last Name</Label>
                 <Input id="last-name" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)}
-                  className={`h-10 ${errors.lastName ? 'border-destructive' : ''}`} />
+                  className={`h-11 ${errors.lastName ? 'border-destructive' : ''}`} />
                 {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm">Email</Label>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input id="email" type="email" placeholder="john@example.com" required value={email} onChange={(e) => setEmail(e.target.value)}
-                  className={`pl-10 h-10 ${errors.email ? 'border-destructive' : ''}`} />
+                  className={`pl-10 h-11 ${errors.email ? 'border-destructive' : ''}`} />
               </div>
               {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-sm">Password</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input id="password" type="password" placeholder="Minimum 8 characters" required value={password} onChange={(e) => setPassword(e.target.value)}
-                  className={`pl-10 h-10 ${errors.password ? 'border-destructive' : ''}`} />
+                  className={`pl-10 h-11 ${errors.password ? 'border-destructive' : ''}`} />
               </div>
               {password.length > 0 && (
-                <div className="flex items-center gap-2 mt-1.5">
+                <div className="flex items-center gap-2 mt-2">
                   <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
                     <div className={`h-full rounded-full transition-all duration-300 ${strengthColor}`} style={{ width: `${passwordStrength}%` }} />
                   </div>
@@ -247,11 +247,11 @@ const SignUp = () => {
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
             </div>
             
-            <div className="space-y-1.5">
-              <Label htmlFor="resume" className="text-sm">Upload Resume (PDF, DOCX, TXT)</Label>
+            <div className="space-y-2">
+              <Label htmlFor="resume" className="text-sm font-medium">Upload Resume (PDF, DOCX, TXT)</Label>
               <div className="relative">
                 <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="resume" type="file" onChange={handleFileChange} className="pl-10 h-10 file:text-primary file:font-medium cursor-pointer" accept=".pdf,.docx,.txt,.doc" disabled={isProcessingFile} />
+                <Input id="resume" type="file" onChange={handleFileChange} className="pl-10 h-11 file:text-primary file:font-medium cursor-pointer" accept=".pdf,.docx,.txt,.doc" disabled={isProcessingFile} />
               </div>
               {isProcessingFile && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -261,16 +261,16 @@ const SignUp = () => {
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="resume-text" className="text-sm">Resume Text</Label>
-              <Textarea id="resume-text" placeholder="Paste your resume text here or upload a file above..." className="min-h-[100px] resize-none" value={resumeText} onChange={(e) => setResumeText(e.target.value)} required />
+            <div className="space-y-2">
+              <Label htmlFor="resume-text" className="text-sm font-medium">Resume Text</Label>
+              <Textarea id="resume-text" placeholder="Paste your resume text here or upload a file above..." className="min-h-[120px] resize-none" value={resumeText} onChange={(e) => setResumeText(e.target.value)} required />
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="elevenlabs-api-key" className="text-sm">ElevenLabs API Key</Label>
+            <div className="space-y-2">
+              <Label htmlFor="elevenlabs-api-key" className="text-sm font-medium">ElevenLabs API Key</Label>
               <div className="relative">
                 <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="elevenlabs-api-key" type="password" placeholder="Your ElevenLabs API Key" required value={elevenLabsApiKey} onChange={(e) => setElevenLabsApiKey(e.target.value)} className="pl-10 h-10" />
+                <Input id="elevenlabs-api-key" type="password" placeholder="Your ElevenLabs API Key" required value={elevenLabsApiKey} onChange={(e) => setElevenLabsApiKey(e.target.value)} className="pl-10 h-11" />
               </div>
               <p className="text-xs text-muted-foreground">
                 Get yours at{' '}
@@ -279,24 +279,24 @@ const SignUp = () => {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm">Persona Visibility</Label>
-              <RadioGroup value={isPublic} onValueChange={setIsPublic} className="grid grid-cols-2 gap-3">
-                <Label htmlFor="signup-private" className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all text-sm ${
+              <Label className="text-sm font-medium">Persona Visibility</Label>
+              <RadioGroup value={isPublic} onValueChange={setIsPublic} className="grid grid-cols-2 gap-4">
+                <Label htmlFor="signup-private" className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
                   isPublic === 'private' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
                 }`}>
                   <RadioGroupItem value="private" id="signup-private" />
-                  <div><span className="font-medium">Private</span><p className="text-xs text-muted-foreground">Only you</p></div>
+                  <div><span className="font-medium">Private</span><p className="text-xs text-muted-foreground mt-0.5">Only you</p></div>
                 </Label>
-                <Label htmlFor="signup-public" className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all text-sm ${
+                <Label htmlFor="signup-public" className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
                   isPublic === 'public' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
                 }`}>
                   <RadioGroupItem value="public" id="signup-public" />
-                  <div><span className="font-medium">Public</span><p className="text-xs text-muted-foreground">Discoverable</p></div>
+                  <div><span className="font-medium">Public</span><p className="text-xs text-muted-foreground mt-0.5">Discoverable</p></div>
                 </Label>
               </RadioGroup>
             </div>
 
-            <Button type="submit" disabled={isLoading || isProcessingFile} className="w-full h-11 font-semibold shadow-md shadow-primary/20 mt-2">
+            <Button type="submit" disabled={isLoading || isProcessingFile} className="w-full h-12 text-base font-semibold shadow-md shadow-primary/20 mt-4">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -309,7 +309,7 @@ const SignUp = () => {
                 </>
               )}
             </Button>
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-sm text-muted-foreground text-center pt-1">
               Already have an account?{' '}
               <Link to="/signin" className="text-primary font-medium hover:underline">Sign in</Link>
             </p>
