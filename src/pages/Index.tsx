@@ -76,13 +76,13 @@ const Index = () => {
           </p>
           
           <div className="mt-12 flex gap-4 justify-center flex-wrap opacity-0 animate-fade-in stagger-3">
-            <Button size="lg" asChild <Button size="lg" asChild className="h-12 px-8 text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all">>
+            <Button size="lg" asChild className="h-12 px-8 text-base font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all">
               <Link to="/signup">
                 Build Your Agent
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild <Button size="lg" variant="outline" asChild className="h-12 px-8 text-base font-semibold hover:bg-accent/50 transition-all">>
+            <Button size="lg" variant="outline" asChild className="h-12 px-8 text-base font-semibold hover:bg-accent/50 transition-all">
               <Link to="/personas">Discover People</Link>
             </Button>
           </div>
@@ -232,13 +232,13 @@ const Index = () => {
               Your agent is always available. Always informed. Always you.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <Button size="lg" asChild <Button size="lg" asChild className="h-12 px-10 text-base font-semibold shadow-lg shadow-primary/20">>
+              <Button size="lg" asChild className="h-12 px-10 text-base font-semibold shadow-lg shadow-primary/20">
                 <Link to="/signup">
                   Create Your Agent
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild <Button size="lg" variant="outline" asChild className="h-12 px-10 text-base font-semibold">>
+              <Button size="lg" variant="outline" asChild className="h-12 px-10 text-base font-semibold">
                 <Link to="/personas">
                   Explore Agents
                 </Link>
