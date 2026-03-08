@@ -1,11 +1,57 @@
+import { Link } from 'react-router-dom';
+import { BotMessageSquare } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border/40">
-      <div className="container flex flex-col items-center justify-center gap-4 py-10 md:h-24 md:flex-row md:py-0">
-        <p className="text-center text-sm leading-loose text-muted-foreground">
-          Built for a hackathon. © {new Date().getFullYear()} ProPersona. All Rights Reserved.
-        </p>
+    <footer className="border-t border-border/40 bg-card/30">
+      <div className="container py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+          {/* Brand */}
+          <div className="space-y-4">
+            <Link to="/" className="flex items-center space-x-2.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground">
+                <BotMessageSquare className="h-4 w-4" />
+              </div>
+              <span className="text-lg font-bold font-display">ProPersona</span>
+            </Link>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              Transform your resume into a voice-interactive AI persona. Built for modern professionals.
+            </p>
+          </div>
+
+          {/* Links */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground">Product</h4>
+            <nav className="flex flex-col space-y-2.5">
+              <Link to="/personas" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Explore Personas
+              </Link>
+              <Link to="/signup" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Create Persona
+              </Link>
+              <Link to="/signin" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Sign In
+              </Link>
+            </nav>
+          </div>
+
+          {/* Info */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground">About</h4>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Built for a hackathon by passionate developers. Powered by ElevenLabs AI voice technology.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-12 pt-6 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} ProPersona. All rights reserved.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Made with passion at a hackathon ✨
+          </p>
+        </div>
       </div>
     </footer>
   );

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Loader2, MessageCircle, Sparkles } from "lucide-react";
+import { Users, Loader2, MessageCircle, Sparkles, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
 interface PublicPersona {
@@ -12,11 +13,14 @@ interface PublicPersona {
   avatar_url: string | null;
   agent_id: string | null;
   conversation_link: string;
+  first_name: string | null;
+  last_name: string | null;
 }
 
 const PublicPersonas = () => {
   const [personas, setPersonas] = useState<PublicPersona[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -25,49 +29,82 @@ const PublicPersonas = () => {
       
       const { data, error } = await supabase
         .from('personas')
-        .select('id, avatar_url, agent_id')
+        .select('id, avatar_url, agent_id, user_id')
         .eq('is_public', true);
       
       if (error) {
         console.error("Error fetching public personas:", error);
-        toast({ 
-          title: "Error", 
-          description: "Could not fetch public personas.", 
-          variant: "destructive"
-        });
+        toast({ title: "Error", description: "Could not fetch public personas.", variant: "destructive" });
         setPersonas([]);
-      } else {
-        const formattedPersonas = (data || [])
-          .filter(p => p.agent_id)
-          .map((p) => ({
-            id: p.id,
-            avatar_url: p.avatar_url,
-            agent_id: p.agent_id,
-            conversation_link: `https://elevenlabs.io/app/talk-to?agent_id=${p.agent_id}`
-          }));
-
-        setPersonas(formattedPersonas);
+        setLoading(false);
+        return;
       }
+
+      const personasWithAgent = (data || []).filter(p => p.agent_id);
+      
+      // Fetch profile names for each persona
+      const userIds = personasWithAgent.map(p => p.user_id);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name')
+        .in('id', userIds);
+
+      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
+
+      const formattedPersonas = personasWithAgent.map((p) => {
+        const profile = profileMap.get(p.user_id);
+        return {
+          id: p.id,
+          avatar_url: p.avatar_url,
+          agent_id: p.agent_id,
+          conversation_link: `https://elevenlabs.io/app/talk-to?agent_id=${p.agent_id}`,
+          first_name: profile?.first_name || null,
+          last_name: profile?.last_name || null,
+        };
+      });
+
+      setPersonas(formattedPersonas);
       setLoading(false);
     };
     
     fetchPublicPersonas();
   }, [toast]);
 
+  const filteredPersonas = personas.filter(p => {
+    if (!searchQuery) return true;
+    const name = `${p.first_name || ''} ${p.last_name || ''}`.toLowerCase();
+    return name.includes(searchQuery.toLowerCase());
+  });
+
   return (
     <div className="max-w-6xl mx-auto px-4">
       {/* Hero Section */}
-      <div className="text-center mb-16">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6">
+      <div className="text-center mb-12 md:mb-16">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 opacity-0 animate-fade-in">
           <Users className="h-8 w-8 text-primary" />
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">
-          Discover <span className="text-primary">Personas</span>
+        <h1 className="text-4xl md:text-5xl font-bold font-display mb-4 opacity-0 animate-slide-up stagger-1">
+          Discover <span className="gradient-text">Personas</span>
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Explore public professional personas from our community. Connect with AI-powered professionals and discover new opportunities.
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto opacity-0 animate-fade-in stagger-2">
+          Explore public professional personas. Connect with AI-powered professionals and start a conversation.
         </p>
       </div>
+
+      {/* Search */}
+      {personas.length > 0 && (
+        <div className="max-w-md mx-auto mb-10 opacity-0 animate-fade-in stagger-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search personas..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-11 bg-card border-border/50"
+            />
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center min-h-[40vh]">
@@ -76,47 +113,59 @@ const PublicPersonas = () => {
             <p className="text-muted-foreground">Loading personas...</p>
           </div>
         </div>
-      ) : personas.length === 0 ? (
+      ) : filteredPersonas.length === 0 ? (
         <div className="text-center py-20">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-6">
             <Sparkles className="h-10 w-10 text-muted-foreground" />
           </div>
-          <h2 className="text-2xl font-semibold mb-2">No public personas yet</h2>
+          <h2 className="text-2xl font-semibold mb-2">
+            {searchQuery ? "No personas found" : "No public personas yet"}
+          </h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Be the first to create a public persona and showcase your professional voice to the world.
+            {searchQuery 
+              ? "Try a different search term." 
+              : "Be the first to create a public persona and showcase your professional voice."
+            }
           </p>
-          <Button asChild size="lg">
-            <Link to="/signup">Create Your Persona</Link>
-          </Button>
+          {!searchQuery && (
+            <Button asChild size="lg">
+              <Link to="/signup">Create Your Persona</Link>
+            </Button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {personas.map((persona) => (
+          {filteredPersonas.map((persona, i) => (
             <Card 
               key={persona.id} 
-              className="group border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
+              className={`group border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 opacity-0 animate-slide-up stagger-${Math.min(i + 1, 6)}`}
             >
-              <CardHeader className="pb-2">
+              <CardHeader className="pb-3">
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 ring-2 ring-background shadow-lg group-hover:ring-primary/20 transition-all">
+                  <Avatar className="h-14 w-14 ring-2 ring-border group-hover:ring-primary/30 transition-all shadow-md">
                     <AvatarImage src={persona.avatar_url ?? undefined} alt="Persona avatar" />
-                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary text-xl">
-                      🤖
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-lg font-semibold">
+                      {persona.first_name?.charAt(0) || '?'}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-lg">AI Persona</CardTitle>
+                    <CardTitle className="text-lg">
+                      {persona.first_name && persona.last_name 
+                        ? `${persona.first_name} ${persona.last_name}` 
+                        : "AI Persona"
+                      }
+                    </CardTitle>
                     <p className="text-sm text-muted-foreground">Voice Agent</p>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="pb-4">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   An AI-powered professional persona ready to chat about their experience and expertise.
                 </p>
               </CardContent>
               <CardFooter>
-                <Button asChild className="w-full group-hover:bg-primary/90">
+                <Button asChild className="w-full shadow-sm group-hover:shadow-md group-hover:shadow-primary/10 transition-shadow">
                   <a href={persona.conversation_link} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Start Conversation
