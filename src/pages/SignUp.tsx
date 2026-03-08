@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link, useNavigate } from 'react-router-dom';
-import { Loader2, Mail, Lock, User, FileText, Key, BotMessageSquare, ArrowRight, Check } from 'lucide-react';
+import { Loader2, Mail, Lock, User, FileText, Key, Brain, ArrowRight, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -144,16 +144,16 @@ const SignUp = () => {
       setCreationStep(4);
     } catch (error: any) {
       setIsLoading(false); setCreationStep(0);
-      toast({ title: 'Error Creating Persona', description: error.message || 'An unexpected error occurred.', variant: 'destructive' });
+      toast({ title: 'Error Creating Agent', description: error.message || 'An unexpected error occurred.', variant: 'destructive' });
       return;
     }
 
     setIsLoading(false);
-    toast({ title: 'Account created!', description: 'Your persona has been set up successfully.' });
+    toast({ title: 'Agent created!', description: 'Your professional agent is live.' });
     navigate('/account');
   };
 
-  const steps = ['Creating account...', 'Building AI agent...', 'Setting up persona...', 'Done!'];
+  const steps = ['Creating account...', 'Training your agent...', 'Setting up profile...', 'Your agent is live!'];
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-8">
@@ -163,14 +163,18 @@ const SignUp = () => {
           <div className="hero-orb-2 -bottom-20 -left-20 opacity-30" />
           <div className="relative z-10">
             <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 mb-8">
-              <BotMessageSquare className="h-7 w-7" />
+              <Brain className="h-7 w-7" />
             </div>
-            <h2 className="text-2xl font-bold font-display mb-4">Create your AI persona</h2>
+            <h2 className="text-2xl font-bold font-display mb-4">Build Your Professional Agent</h2>
             <p className="text-muted-foreground leading-relaxed mb-8">
-              Upload your resume and let AI create a voice-interactive professional persona for you.
+              You're not just creating a profile. You're creating a professional proxy that represents you 24/7.
             </p>
             <div className="space-y-4">
-              {['AI voice agent', 'Share publicly or privately', 'Always available 24/7'].map((item, i) => (
+              {[
+                'Trained on your real resume & work',
+                'People can ask it anything about you',
+                'Always available, always informed',
+              ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
                     <Check className="h-3.5 w-3.5 text-primary" />
@@ -185,8 +189,8 @@ const SignUp = () => {
         {/* Right form panel */}
         <div className="md:col-span-3 p-8 md:p-12 overflow-y-auto max-h-[85vh]">
           <div className="space-y-1.5 mb-8">
-            <h1 className="font-display text-2xl font-bold">Create Account</h1>
-            <p className="text-muted-foreground">Set up your professional AI persona</p>
+            <h1 className="font-display text-2xl font-bold">Create Your Agent</h1>
+            <p className="text-muted-foreground">Prime your AI twin with your professional self</p>
           </div>
 
           {/* Progress indicator during creation */}
@@ -264,6 +268,7 @@ const SignUp = () => {
             <div className="space-y-2">
               <Label htmlFor="resume-text" className="text-sm font-medium">Resume Text</Label>
               <Textarea id="resume-text" placeholder="Paste your resume text here or upload a file above..." className="min-h-[120px] resize-none" value={resumeText} onChange={(e) => setResumeText(e.target.value)} required />
+              <p className="text-xs text-muted-foreground">This is what your agent will be trained on. The more detail, the better it represents you.</p>
             </div>
 
             <div className="space-y-2">
@@ -279,13 +284,13 @@ const SignUp = () => {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Persona Visibility</Label>
+              <Label className="text-sm font-medium">Agent Visibility</Label>
               <RadioGroup value={isPublic} onValueChange={setIsPublic} className="grid grid-cols-2 gap-4">
                 <Label htmlFor="signup-private" className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
                   isPublic === 'private' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
                 }`}>
                   <RadioGroupItem value="private" id="signup-private" />
-                  <div><span className="font-medium">Private</span><p className="text-xs text-muted-foreground mt-0.5">Only you</p></div>
+                  <div><span className="font-medium">Private</span><p className="text-xs text-muted-foreground mt-0.5">Link only</p></div>
                 </Label>
                 <Label htmlFor="signup-public" className={`flex items-center space-x-3 p-4 rounded-xl border cursor-pointer transition-all ${
                   isPublic === 'public' ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'
@@ -300,11 +305,11 @@ const SignUp = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating Account...
+                  Building Agent...
                 </>
               ) : (
                 <>
-                  Create Account & Persona
+                  Build My Agent
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
