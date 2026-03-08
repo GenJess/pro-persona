@@ -1,7 +1,7 @@
 project_id = "pjixvwobgnxopbhhnrbb"
 
 [functions.create-agent]
-verify_jwt = true
+verify_jwt = false
 
 [functions.extract-document-text]
 verify_jwt = false
