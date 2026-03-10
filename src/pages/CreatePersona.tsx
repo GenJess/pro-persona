@@ -105,7 +105,7 @@ const CreatePersona = () => {
         agentId = agentData.agent_id;
       }
 
-      if (agentError) throw agentError;
+      // removed old error check - handled above
 
       setPersonaOutput({ status: 'creating', message: 'Setting up profile...', step: 3 });
 
