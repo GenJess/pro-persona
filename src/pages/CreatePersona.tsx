@@ -105,20 +105,18 @@ const CreatePersona = () => {
         agentId = agentData.agent_id;
       }
 
-      // removed old error check - handled above
-
       setPersonaOutput({ status: 'creating', message: 'Setting up profile...', step: 3 });
 
       const avatarUrl = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.id}&scale=100`;
-      const conversationLink = `https://elevenlabs.io/app/talk-to?agent_id=${agentData.agent_id}`;
+      const conversationLink = agentId ? `https://elevenlabs.io/app/talk-to?agent_id=${agentId}` : null;
       
       const { error: insertError } = await supabase
         .from('personas')
         .insert({
           user_id: user.id,
           is_public: isPublic === 'public',
-          elevenlabs_api_key: elevenLabsApiKey,
-          agent_id: agentData.agent_id,
+          elevenlabs_api_key: elevenLabsApiKey || null,
+          agent_id: agentId,
           conversation_link: conversationLink,
           avatar_url: avatarUrl,
         });
@@ -128,7 +126,7 @@ const CreatePersona = () => {
       await supabase
         .from('profiles')
         .update({
-          elevenlabs_agent_id: agentData.agent_id,
+          elevenlabs_agent_id: agentId,
           elevenlabs_agent_link: conversationLink,
         })
         .eq('id', user.id);
