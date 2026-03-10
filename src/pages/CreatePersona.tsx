@@ -64,12 +64,7 @@ const CreatePersona = () => {
     event.preventDefault();
     
     if (!resumeText.trim()) {
-      toast({ title: 'Resume Required', description: 'Please upload a resume or paste text.', variant: 'destructive' });
-      return;
-    }
-    
-    if (!elevenLabsApiKey.trim()) {
-      toast({ title: 'API Key Required', description: 'Please provide your ElevenLabs API key.', variant: 'destructive' });
+      toast({ title: 'Resume Required', description: 'Please upload a resume or paste your experience.', variant: 'destructive' });
       return;
     }
     
@@ -94,29 +89,34 @@ const CreatePersona = () => {
 
       setPersonaOutput({ status: 'creating', message: 'Creating AI agent...', step: 2 });
 
-      const { data: agentData, error: agentError } = await supabase.functions.invoke('create-agent', {
-        body: {
-          resume_text: resumeText,
-          first_name: profile.first_name,
-          last_name: profile.last_name,
-          elevenlabs_api_key: elevenLabsApiKey,
-        },
-      });
+      let agentId = null;
+      
+      if (elevenLabsApiKey.trim()) {
+        const { data: agentData, error: agentError } = await supabase.functions.invoke('create-agent', {
+          body: {
+            resume_text: resumeText,
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+            elevenlabs_api_key: elevenLabsApiKey,
+          },
+        });
 
-      if (agentError) throw agentError;
+        if (agentError) throw agentError;
+        agentId = agentData.agent_id;
+      }
 
       setPersonaOutput({ status: 'creating', message: 'Setting up profile...', step: 3 });
 
       const avatarUrl = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.id}&scale=100`;
-      const conversationLink = `https://elevenlabs.io/app/talk-to?agent_id=${agentData.agent_id}`;
+      const conversationLink = agentId ? `https://elevenlabs.io/app/talk-to?agent_id=${agentId}` : null;
       
       const { error: insertError } = await supabase
         .from('personas')
         .insert({
           user_id: user.id,
           is_public: isPublic === 'public',
-          elevenlabs_api_key: elevenLabsApiKey,
-          agent_id: agentData.agent_id,
+          elevenlabs_api_key: elevenLabsApiKey || null,
+          agent_id: agentId,
           conversation_link: conversationLink,
           avatar_url: avatarUrl,
         });
@@ -126,7 +126,7 @@ const CreatePersona = () => {
       await supabase
         .from('profiles')
         .update({
-          elevenlabs_agent_id: agentData.agent_id,
+          elevenlabs_agent_id: agentId,
           elevenlabs_agent_link: conversationLink,
         })
         .eq('id', user.id);
@@ -189,7 +189,12 @@ const CreatePersona = () => {
           <form onSubmit={handleSubmit}>
             <CardContent className="p-6 md:p-8 space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="resume" className="text-sm font-medium">Upload Resume (PDF, DOCX, TXT)</Label>
+                <Label className="text-sm font-medium">Your Professional Context</Label>
+                <p className="text-sm text-muted-foreground">Upload a resume <span className="font-medium text-foreground">or</span> paste your experience below — whichever is easier.</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="resume" className="text-sm font-medium">Option 1: Upload a File</Label>
                 <div className="relative">
                   <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
@@ -215,36 +220,43 @@ const CreatePersona = () => {
                 )}
               </div>
 
+              <div className="relative flex items-center gap-3">
+                <div className="flex-1 border-t border-border" />
+                <span className="text-xs font-medium text-muted-foreground uppercase">or</span>
+                <div className="flex-1 border-t border-border" />
+              </div>
+
               <div className="space-y-2">
-                <Label htmlFor="resume-text" className="text-sm font-medium">Resume Text</Label>
+                <Label htmlFor="resume-text" className="text-sm font-medium">Option 2: Paste Your Experience</Label>
                 <Textarea
                   id="resume-text"
-                  placeholder="Paste your resume text here, or upload a file above. The more detail, the better your agent represents you."
+                  placeholder="Paste your resume, LinkedIn summary, bio, or anything about your professional background..."
                   className="min-h-[160px] resize-none"
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
-                  required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="elevenlabs-api-key" className="text-sm font-medium">ElevenLabs API Key</Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="elevenlabs-api-key" className="text-sm font-medium">ElevenLabs API Key</Label>
+                  <span className="text-xs text-muted-foreground">(optional — add later for voice cloning)</span>
+                </div>
                 <div className="relative">
                   <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
                     id="elevenlabs-api-key" 
                     type="password" 
-                    placeholder="Your API Key" 
-                    required 
+                    placeholder="sk-..." 
                     value={elevenLabsApiKey} 
                     onChange={(e) => setElevenLabsApiKey(e.target.value)}
                     className="pl-10 h-11"
                   />
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Get your key at{' '}
+                  Needed for voice cloning. You can always add this later.{' '}
                   <a href="https://elevenlabs.io/subscription" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                    elevenlabs.io
+                    Get a key →
                   </a>
                 </p>
               </div>
