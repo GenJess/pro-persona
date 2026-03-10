@@ -233,23 +233,25 @@ const CreatePersona = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="elevenlabs-api-key" className="text-sm font-medium">ElevenLabs API Key</Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="elevenlabs-api-key" className="text-sm font-medium">ElevenLabs API Key</Label>
+                  <span className="text-xs text-muted-foreground">(optional — add later for voice cloning)</span>
+                </div>
                 <div className="relative">
                   <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
                     id="elevenlabs-api-key" 
                     type="password" 
-                    placeholder="Your API Key" 
-                    required 
+                    placeholder="sk-..." 
                     value={elevenLabsApiKey} 
                     onChange={(e) => setElevenLabsApiKey(e.target.value)}
                     className="pl-10 h-11"
                   />
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Get your key at{' '}
+                  Needed for voice cloning. You can always add this later.{' '}
                   <a href="https://elevenlabs.io/subscription" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                    elevenlabs.io
+                    Get a key →
                   </a>
                 </p>
               </div>
