@@ -184,7 +184,12 @@ const CreatePersona = () => {
           <form onSubmit={handleSubmit}>
             <CardContent className="p-6 md:p-8 space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="resume" className="text-sm font-medium">Upload Resume (PDF, DOCX, TXT)</Label>
+                <Label className="text-sm font-medium">Your Professional Context</Label>
+                <p className="text-sm text-muted-foreground">Upload a resume <span className="font-medium text-foreground">or</span> paste your experience below — whichever is easier.</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="resume" className="text-sm font-medium">Option 1: Upload a File</Label>
                 <div className="relative">
                   <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
@@ -210,15 +215,20 @@ const CreatePersona = () => {
                 )}
               </div>
 
+              <div className="relative flex items-center gap-3">
+                <div className="flex-1 border-t border-border" />
+                <span className="text-xs font-medium text-muted-foreground uppercase">or</span>
+                <div className="flex-1 border-t border-border" />
+              </div>
+
               <div className="space-y-2">
-                <Label htmlFor="resume-text" className="text-sm font-medium">Resume Text</Label>
+                <Label htmlFor="resume-text" className="text-sm font-medium">Option 2: Paste Your Experience</Label>
                 <Textarea
                   id="resume-text"
-                  placeholder="Paste your resume text here, or upload a file above. The more detail, the better your agent represents you."
+                  placeholder="Paste your resume, LinkedIn summary, bio, or anything about your professional background..."
                   className="min-h-[160px] resize-none"
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
-                  required
                 />
               </div>
 
