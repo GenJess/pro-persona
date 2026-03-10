@@ -89,14 +89,21 @@ const CreatePersona = () => {
 
       setPersonaOutput({ status: 'creating', message: 'Creating AI agent...', step: 2 });
 
-      const { data: agentData, error: agentError } = await supabase.functions.invoke('create-agent', {
-        body: {
-          resume_text: resumeText,
-          first_name: profile.first_name,
-          last_name: profile.last_name,
-          elevenlabs_api_key: elevenLabsApiKey,
-        },
-      });
+      let agentId = null;
+      
+      if (elevenLabsApiKey.trim()) {
+        const { data: agentData, error: agentError } = await supabase.functions.invoke('create-agent', {
+          body: {
+            resume_text: resumeText,
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+            elevenlabs_api_key: elevenLabsApiKey,
+          },
+        });
+
+        if (agentError) throw agentError;
+        agentId = agentData.agent_id;
+      }
 
       if (agentError) throw agentError;
 
