@@ -64,12 +64,7 @@ const CreatePersona = () => {
     event.preventDefault();
     
     if (!resumeText.trim()) {
-      toast({ title: 'Resume Required', description: 'Please upload a resume or paste text.', variant: 'destructive' });
-      return;
-    }
-    
-    if (!elevenLabsApiKey.trim()) {
-      toast({ title: 'API Key Required', description: 'Please provide your ElevenLabs API key.', variant: 'destructive' });
+      toast({ title: 'Resume Required', description: 'Please upload a resume or paste your experience.', variant: 'destructive' });
       return;
     }
     
