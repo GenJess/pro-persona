@@ -68,6 +68,9 @@ serve(async (req) => {
     if (!createAgentResponse.ok) {
       const errorBody = await createAgentResponse.text();
       console.error("ElevenLabs Agent Creation Error:", errorBody);
+      if (createAgentResponse.status === 401) {
+        throw new Error("Invalid ElevenLabs API key. Please check your key at elevenlabs.io and try again — or skip this field to create your agent without voice cloning.");
+      }
       throw new Error(`Failed to create ElevenLabs agent. Status: ${createAgentResponse.status}`);
     }
 
