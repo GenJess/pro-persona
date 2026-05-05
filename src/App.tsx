@@ -39,7 +39,6 @@ const App = () => (
               <Route path="/account" element={<Account />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            </Routes>
           </Layout>
         </AuthProvider>
       </BrowserRouter>
