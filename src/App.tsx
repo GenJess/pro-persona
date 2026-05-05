@@ -11,6 +11,9 @@ import CreatePersona from "./pages/CreatePersona";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import Account from "./pages/Account";
+import Feed from "./pages/Feed";
+import Profile from "./pages/Profile";
+import Groups from "./pages/Groups";
 import Layout from "./components/Layout";
 import { AuthProvider } from "./contexts/AuthProvider";
 
@@ -26,7 +29,10 @@ const App = () => (
           <Layout>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/feed" element={<Feed />} />
               <Route path="/personas" element={<PublicPersonas />} />
+              <Route path="/p/:slug" element={<Profile />} />
+              <Route path="/groups" element={<Groups />} />
               <Route path="/create-persona" element={<CreatePersona />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/signin" element={<SignIn />} />

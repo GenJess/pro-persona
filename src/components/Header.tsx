@@ -13,10 +13,16 @@ const Header = () => {
   const { session, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/personas', label: 'Explore' },
-  ];
+  const navLinks = session
+    ? [
+        { href: '/feed', label: 'Feed' },
+        { href: '/personas', label: 'People' },
+        { href: '/groups', label: 'Groups' },
+      ]
+    : [
+        { href: '/', label: 'Home' },
+        { href: '/personas', label: 'Explore' },
+      ];
 
   const handleSignOut = async () => {
     try {
